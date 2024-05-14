@@ -1,7 +1,7 @@
 import java.lang.Comparable;
 import java.util.LinkedList;
 
-public class MyHashTable<K extends Comparable<K>, V> {
+public class MyHashTable<K, V> {
     private class HashNode<K,V>{
         private K key;
         private V value;
@@ -25,7 +25,7 @@ public class MyHashTable<K extends Comparable<K>, V> {
         chainArray = new HashNode[M];
     }
     private int hash(K key){
-        return (key.hashCode() % M);
+        return (Math.abs(key.hashCode() % M));
     }
     public void put(K key, V value){
         int index = hash(key);
@@ -80,7 +80,6 @@ public class MyHashTable<K extends Comparable<K>, V> {
         int index = hash(key);
         HashNode<K, V> head = chainArray[index];
         HashNode<K, V> prev = null;
-
         while (head != null) {
             if (head.key.equals(key)) {
                 break;
@@ -88,19 +87,15 @@ public class MyHashTable<K extends Comparable<K>, V> {
             prev = head;
             head = head.next;
         }
-
         if (head == null) {
             return null;
         }
-
         size--;
-
         if (prev != null) {
             prev.next = head.next;
         } else {
             chainArray[index] = head.next;
         }
-
         return head.value;
     }
     public boolean contains(V value){
@@ -126,5 +121,16 @@ public class MyHashTable<K extends Comparable<K>, V> {
             }
         }
         return null;
+    }
+    public void printChainLengths() {
+        for (int i = 0; i < M; i++) {
+            int count = 0;
+            HashNode<K, V> head = chainArray[i];
+            while (head != null) {
+                count++;
+                head = head.next;
+            }
+            System.out.println("Chain " + i + ": " + count + " elements");
+        }
     }
 }
